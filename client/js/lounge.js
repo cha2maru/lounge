@@ -31,6 +31,15 @@ $(function() {
 		"/whois"
 	];
 
+	var bitlbee_commands = [
+		"identify",
+		"reply",
+		"favorite",
+		"rt",
+		"account"
+	];
+
+
 	var sidebar = $("#sidebar, #footer");
 	var chat = $("#chat");
 
@@ -1073,11 +1082,13 @@ $(function() {
 
 	function complete(word) {
 		var words = commands.slice();
+		words = words.concat(bitlbee_commands);
 		var users = chat.find(".active").find(".users");
 		var nicks = users.data("nicks");
 
 		for (var i in nicks) {
 			words.push(nicks[i]);
+			words.push("@" + nicks[i]);
 		}
 
 		sidebar.find(".chan")
