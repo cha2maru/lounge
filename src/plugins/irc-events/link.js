@@ -4,6 +4,8 @@ var Msg = require("../../models/msg");
 var request = require("request");
 var Helper = require("../../helper");
 var es = require("event-stream");
+var Iconv = require("iconv").Iconv;
+var jschardet = require('jschardet');
 
 process.setMaxListeners(0);
 
@@ -125,6 +127,15 @@ function fetch(url, cb) {
 			var type;
 			var size = req.response.headers["content-length"];
 			try {
+				try {
+					var detectResult = jschardet.detect(data) || {};
+					if (detectResult.encoding !== 'UTF-8') {
+						var iconv = new Iconv(detectResult.encoding, 'UTF-8//TRANSLIT//IGNORE');
+						data = iconv.convert(data).toString();
+					}
+				} catch (e) {
+					//convert error
+				}
 				body = JSON.parse(data);
 			} catch (e) {
 				body = {};
